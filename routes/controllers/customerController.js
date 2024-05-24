@@ -1,10 +1,27 @@
 var express = require('express')
 var router = express.Router()
-var { regService } = require('../services/customerService')
+var validateToken = require('../../utils/validateToken')
+const { regService, loginService } = require('../services/customerService')
 
-router.post("/login", function (req, res, next) {
+router.post("/login", async function (req, res, next) {
+    try {
+        const data = req.body.data
+        const result = await loginService(data)
+        res.send(result)
+    } catch (ex) {
+        console.error(ex)
+        res.send(ex.message)
+    }
 
 })
+
+router.get(
+    "/orders-list",
+    validateToken,
+    function (req, res, next) {
+        res.send("get orders")
+    })
+
 
 router.post('/register', async function (req, res, next) {
     try {

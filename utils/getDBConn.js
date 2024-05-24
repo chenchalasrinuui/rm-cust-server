@@ -1,6 +1,6 @@
 var mongo = require('mongodb')
 
-async function getDB(data) {
+async function getDB() {
     try {
         const url = "mongodb+srv://nit:nit@11am.i56uqxa.mongodb.net/"
         const mongoClient = mongo.MongoClient
