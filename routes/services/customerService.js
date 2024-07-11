@@ -1,6 +1,8 @@
-const { regDAO, loginDAO } = require('../dao/customerDAO')
+const { regDAO, loginDAO, getOrdersDAO } = require('../dao/customerDAO')
 const jwt = require('jsonwebtoken')
-async function loginService(data) {
+
+async function loginService(req) {
+    const data = req.body.data;
     let result = await loginDAO(data)
     if (result) {
         const token = jwt.sign(data, "appToken")
@@ -25,10 +27,16 @@ async function regService(data) {
     return result;
 }
 
+async function getOrdersService() {
+    const res = await getOrdersDAO();
+    return res;
+}
+
+
+
 
 module.exports = {
     regService,
-    loginService
+    loginService,
+    getOrdersService
 }
-
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJjMSIsInBhc3N3b3JkIjoicDEiLCJpYXQiOjE3MTY1MzE0Mzh9.DNYvfez7Qm2VNBUYw_F4dKShR8JKct7ERqbX2w3doSs

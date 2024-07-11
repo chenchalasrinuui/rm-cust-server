@@ -7,12 +7,13 @@
 var app = require('../app');
 var debug = require('debug')('my-server:server');
 var http = require('http');
+require('dotenv').config();
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '2020');
+var port = normalizePort(process.env.PORT || '1920');
 app.set('port', port);
 
 /**
@@ -36,8 +37,8 @@ server.on('listening', onListening);
 function normalizePort(val) {
   var port = parseInt(val, 10);
 
-  if (isNaN(port)) {
-    // named pipe
+  if ((port)) {
+    //isNaN named pipe
     return val;
   }
 

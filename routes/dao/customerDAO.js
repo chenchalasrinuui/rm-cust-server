@@ -15,7 +15,16 @@ async function regDAO(data) {
     return result;
 }
 
+async function getOrdersDAO() {
+    const db = await getDB()
+    const collection = db.collection("orders")
+    const result = await collection.find({})
+    return result;
+}
+
+
 module.exports = {
     regDAO,
-    loginDAO
+    loginDAO,
+    getOrdersDAO
 }

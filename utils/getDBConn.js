@@ -2,7 +2,7 @@ var mongo = require('mongodb')
 
 async function getDB() {
     try {
-        const url = "mongodb+srv://nit:nit@11am.i56uqxa.mongodb.net/"
+        const url = process.env.DB_URL;
         const mongoClient = mongo.MongoClient
         const server = await mongoClient.connect(url)
         const db = server.db("nit")
