@@ -1,7 +1,7 @@
 var express = require('express')
 var router = express.Router()
 var validateToken = require('../../utils/validateToken')
-const { regService, loginService, getOrdersService } = require('../services/customerService')
+const { regService, loginService, getOrdersService, getProductsService, saveOrderService, saveToCartService, deleteCartService, getCartService } = require('../services/customerService')
 
 router.post("/login", async function (req, res, next) {
     try {
@@ -13,23 +13,9 @@ router.post("/login", async function (req, res, next) {
     }
 
 })
-
-router.get(
-    "/orders-list",
-    validateToken,
-    function (req, res, next) {
-        (async function () {
-            const result = await getOrdersService();
-            res.send(result)
-        })()
-    })
-
-
 router.post('/register', async function (req, res, next) {
     try {
-        console.log('controller')
-        var data = req.body.data;
-        const result = await regService(data)
+        const result = await regService(res)
         res.send(result)
 
     } catch (ex) {
@@ -38,5 +24,102 @@ router.post('/register', async function (req, res, next) {
     }
 
 })
+
+router.post('/save-order', validateToken, function (req, res, next) {
+    try {
+        (async function () {
+            const result = await saveOrderService();
+            res.send(result)
+        })()
+    } catch (ex) {
+        console.error(ex);
+        res.send(ex.message);
+    }
+})
+
+router.get(
+    "/orders-list",
+    validateToken,
+    function (req, res, next) {
+        try {
+            (async function () {
+                const result = await getOrdersService(req);
+                res.send(result)
+            })()
+        } catch (ex) {
+            console.error(ex);
+            res.send(ex.message)
+        }
+    })
+
+router.delete('/cancelOrder', validateToken, function (req, res, next) {
+    try {
+        (async function () {
+            const result = await cancelOrderService(req)
+            res.send(result)
+        })()
+
+    } catch (ex) {
+        console.error(ex);
+        res.send(ex.message)
+    }
+})
+
+
+router.post('/saveToCart', validateToken, function (req, res, next) {
+    try {
+        (async function () {
+            const result = await saveToCartService();
+            res.send(result)
+        })()
+    } catch (ex) {
+        console.error(ex);
+        res.send(ex.message);
+    }
+})
+
+router.get(
+    "/cartList",
+    validateToken,
+    function (req, res, next) {
+        try {
+            (async function () {
+                const result = await getCartService(req);
+                res.send(result)
+            })()
+        } catch (ex) {
+            console.error(ex);
+            res.send(ex.message)
+        }
+    })
+
+router.delete('/deleteCart', validateToken, function (req, res, next) {
+    try {
+        (async function () {
+            const result = await deleteCartService(req)
+            res.send(result)
+        })()
+
+    } catch (ex) {
+        console.error(ex);
+        res.send(ex.message)
+    }
+})
+
+
+router.get("/getProducts", function (req, res, next) {
+    try {
+        (async () => {
+            const result = await getProductsService();
+            res.send(result)
+        })()
+
+    } catch (ex) {
+        console.error(ex);
+        res.send(ex.message)
+    }
+
+})
+
 
 module.exports = router;
