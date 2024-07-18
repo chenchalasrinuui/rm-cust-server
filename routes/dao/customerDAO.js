@@ -1,5 +1,5 @@
 const getDB = require('../../utils/getDBConn')
-import { ObjectId } from 'mongodb'
+const { ObjectId } = require('mongodb')
 async function loginDAO(data) {
     const db = await getDB()
     const collection = db.collection("customers")
