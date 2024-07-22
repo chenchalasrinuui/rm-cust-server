@@ -1,4 +1,4 @@
-const { regDAO, loginDAO, getOrdersDAO, getProductsDAO, saveOrderDAO } = require('../dao/customerDAO')
+const { regDAO, loginDAO, getOrdersDAO, getProductsDAO, getProductByIdDAO, saveOrderDAO } = require('../dao/customerDAO')
 const jwt = require('jsonwebtoken')
 
 async function loginService(req) {
@@ -68,6 +68,12 @@ async function getProductsService() {
     return res;
 }
 
+async function getProductByIdService(req) {
+    console.log(1, req?.query?.id)
+    const res = await getProductByIdDAO(req?.query?.id);
+    return res;
+}
+
 
 
 
@@ -80,5 +86,6 @@ module.exports = {
     cancelOrderService,
     getCartService,
     saveToCartService,
-    deleteCartService
+    deleteCartService,
+    getProductByIdService
 }
