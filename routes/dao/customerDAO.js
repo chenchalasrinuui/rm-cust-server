@@ -47,8 +47,15 @@ async function getCartDAO(id) {
 async function saveToCartDAO(data) {
     const db = await getDB()
     const collection = db.collection("cart")
-    const result = await collection.insertOne(data)
-    return result;
+    const cartItems = await collection.find({ productId: data?.productId }).toArray();
+    if (cartItems?.length == 0) {
+        const result = await collection.insertOne(data)
+        return result;
+    } else {
+        return {
+            message: "Already added to the cart"
+        }
+    }
 }
 
 async function deleteCartService(orderId) {
@@ -74,7 +81,24 @@ async function getProductByIdDAO(id) {
 }
 
 
+async function addressListDAO(id) {
+    const db = await getDB()
+    const collection = db.collection("address")
+    const result = await collection.find().toArray();
+    return result;
+}
+
+async function saveAddressDAO(data) {
+    const db = await getDB()
+    const collection = db.collection("address")
+    const result = await collection.insertOne(data)
+    return result;
+}
+
+
 module.exports = {
+    saveAddressDAO,
+    addressListDAO,
     regDAO,
     loginDAO,
     getOrdersDAO,

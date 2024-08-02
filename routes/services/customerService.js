@@ -1,4 +1,4 @@
-const { regDAO, loginDAO, getOrdersDAO, getProductsDAO, getProductByIdDAO, saveOrderDAO } = require('../dao/customerDAO')
+const { addressListDAO, saveAddressDAO, regDAO, loginDAO, getCartDAO, getOrdersDAO, getProductsDAO, getProductByIdDAO, saveOrderDAO, saveToCartDAO } = require('../dao/customerDAO')
 const jwt = require('jsonwebtoken')
 
 async function loginService(req) {
@@ -20,8 +20,8 @@ async function loginService(req) {
     return result;
 }
 
-async function regService(data) {
-    console.log("service")
+async function regService(req) {
+    const data = req.body.data;
     let result = await regDAO(data);
     return result;
 }
@@ -74,10 +74,29 @@ async function getProductByIdService(req) {
     return res;
 }
 
+async function addressListService(req) {
+    const id = req.body.id;
+    const res = await addressListDAO(id);
+    return res.map(({ name, phone, city, state, pin }) => {
+        return {
+            address: `${name},
+            ${phone}, ${city}, ${state}, ${pin}.
+            `
+        }
+    })
+}
+
+async function saveAddressService(req) {
+    const data = req.body.data
+    const res = await saveAddressDAO(data)
+    return res;
+}
 
 
 
 module.exports = {
+    addressListService,
+    saveAddressService,
     regService,
     loginService,
     getOrdersService,

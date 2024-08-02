@@ -1,7 +1,7 @@
 var express = require('express')
 var router = express.Router()
 var validateToken = require('../../utils/validateToken')
-const { regService, loginService, getOrdersService, getProductByIdService, getProductsService, saveOrderService, saveToCartService, deleteCartService, getCartService } = require('../services/customerService')
+const { saveAddressService, addressListService, regService, loginService, getOrdersService, getProductByIdService, getProductsService, saveOrderService, saveToCartService, deleteCartService, getCartService } = require('../services/customerService')
 
 router.post("/login", async function (req, res, next) {
     try {
@@ -15,7 +15,7 @@ router.post("/login", async function (req, res, next) {
 })
 router.post('/register', async function (req, res, next) {
     try {
-        const result = await regService(res)
+        const result = await regService(req)
         res.send(result)
 
     } catch (ex) {
@@ -68,7 +68,7 @@ router.delete('/cancelOrder', validateToken, function (req, res, next) {
 router.post('/saveToCart', validateToken, function (req, res, next) {
     try {
         (async function () {
-            const result = await saveToCartService();
+            const result = await saveToCartService(req);
             res.send(result)
         })()
     } catch (ex) {
@@ -134,5 +134,32 @@ router.get("/getProductById", function (req, res, next) {
 
 })
 
+
+router.post('/saveAddress', validateToken, function (req, res, next) {
+    try {
+        (async function () {
+            const result = await saveAddressService(req);
+            res.send(result)
+        })()
+    } catch (ex) {
+        console.error(ex);
+        res.send(ex.message);
+    }
+})
+
+router.get(
+    "/addressList",
+    validateToken,
+    function (req, res, next) {
+        try {
+            (async function () {
+                const result = await addressListService(req);
+                res.send(result)
+            })()
+        } catch (ex) {
+            console.error(ex);
+            res.send(ex.message)
+        }
+    })
 
 module.exports = router;
