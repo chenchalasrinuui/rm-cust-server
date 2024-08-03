@@ -27,7 +27,7 @@ async function regService(req) {
 }
 
 async function getOrdersService(req) {
-    const id = req.body.id;
+    const id = req.query.id;
     const res = await getOrdersDAO(id);
     return res;
 }

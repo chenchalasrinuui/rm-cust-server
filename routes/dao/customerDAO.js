@@ -18,7 +18,7 @@ async function regDAO(data) {
 async function getOrdersDAO(id) {
     const db = await getDB()
     const collection = db.collection("orders")
-    const result = await collection.find({ _id: ObjectId.createFromHexString(id) }).toArray();
+    const result = await collection.find({ uid: id }).toArray();
     return result;
 }
 

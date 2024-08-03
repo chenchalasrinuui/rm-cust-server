@@ -28,7 +28,7 @@ router.post('/register', async function (req, res, next) {
 router.post('/save-order', validateToken, function (req, res, next) {
     try {
         (async function () {
-            const result = await saveOrderService();
+            const result = await saveOrderService(req);
             res.send(result)
         })()
     } catch (ex) {
