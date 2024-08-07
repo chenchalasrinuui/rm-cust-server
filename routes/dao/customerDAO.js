@@ -17,15 +17,34 @@ async function regDAO(data) {
 
 async function getOrdersDAO(id) {
     const db = await getDB()
-    const collection = db.collection("orders")
-    const result = await collection.find({ uid: id }).toArray();
+    const orders = db.collection("orders")
+    const result = await orders.aggregate([
+        {
+            $lookup: {
+                from: "products",
+                localField: 'productId',
+                foreignField: '_id',
+                as: 'productDetails'
+            }
+        },
+        {
+            $unwind: '$productDetails'
+        },
+        {
+            $project: {
+                _id: 1,
+                productId: 1,
+                productDetails: 1
+            }
+        }]).toArray();
+
     return result;
 }
 
 async function saveOrderDAO(data) {
     const db = await getDB()
     const collection = db.collection("orders")
-    const result = await collection.insertOne(data)
+    const result = await collection.insertOne({ ...data, productId: ObjectId.createFromHexString(data.productId) })
     return result;
 }
 
@@ -40,17 +59,36 @@ async function cancelOrderDAO(orderId) {
 async function getCartDAO(id) {
     const db = await getDB()
     const collection = db.collection("cart")
-    const result = await collection.find({ customerId: id }).toArray();
+    const result = await collection.aggregate([
+        {
+            $lookup: {
+                from: "products",
+                localField: 'productId',
+                foreignField: '_id',
+                as: 'productDetails'
+            }
+        },
+        {
+            $unwind: '$productDetails'
+        },
+        {
+            $project: {
+                _id: 1,
+                productId: 1,
+                productDetails: 1
+            }
+        }]).toArray();
     return result;
 }
 
 async function saveToCartDAO(data) {
     const db = await getDB()
     const collection = db.collection("cart")
-    const cartItems = await collection.find({ productId: data?.productId }).toArray();
+    const cartItems = await collection.find({ productId: ObjectId.createFromHexString(data?.productId) }).toArray();
     if (cartItems?.length == 0) {
-        const result = await collection.insertOne(data)
-        return result;
+        const result = await collection.insertOne({ ...data, productId: ObjectId.createFromHexString(data.productId) })
+        const count = await collection.countDocuments({ uid: data?.uid })
+        return { ...result, count }
     } else {
         return {
             message: "Already added to the cart"
