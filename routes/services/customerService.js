@@ -1,4 +1,4 @@
-const { addressListDAO, saveAddressDAO, regDAO, loginDAO, getCartDAO, getOrdersDAO, getProductsDAO, getProductByIdDAO, saveOrderDAO, saveToCartDAO } = require('../dao/customerDAO')
+const { addressListDAO, deleteCartDAO, saveAddressDAO, regDAO, loginDAO, getCartDAO, getOrdersDAO, getProductsDAO, getProductByIdDAO, saveOrderDAO, saveToCartDAO } = require('../dao/customerDAO')
 const jwt = require('jsonwebtoken')
 
 async function loginService(req) {
@@ -47,7 +47,9 @@ async function cancelOrderService(req) {
 async function getCartService(req) {
     const id = req.body.id;
     const res = await getCartDAO(id);
-    return res;
+    return res.map((obj) => {
+        return { ...obj?.productDetails, prouctId: obj?.productId, _id: obj._id }
+    })
 }
 
 async function saveToCartService(req) {
@@ -57,8 +59,8 @@ async function saveToCartService(req) {
 }
 
 async function deleteCartService(req) {
-    const orderId = req.query.orderId;
-    const res = await deleteCartDAO(orderId)
+    const productId = req.query.productId;
+    const res = await deleteCartDAO(productId)
     return res;
 }
 

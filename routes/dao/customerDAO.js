@@ -4,6 +4,12 @@ async function loginDAO(data) {
     const db = await getDB()
     const collection = db.collection("customers")
     const result = await collection.findOne(data)
+    if (result) {
+        const cart = await db.collection("cart");
+        const count = await cart.countDocuments({ uid: result?._id?.toString() })
+        result.count = count;
+    }
+    console.log(1111, result)
     return result;
 }
 
@@ -96,10 +102,14 @@ async function saveToCartDAO(data) {
     }
 }
 
-async function deleteCartService(orderId) {
+async function deleteCartDAO(productId, uid) {
     const db = await getDB()
-    const collection = db.collection("orders")
-    const result = await collection.deleteOne({ _id: ObjectId.createFromHexString(orderId) }, { $set: { status: 'cancel' } },)
+    const collection = db.collection("cart")
+    const result = await collection.deleteOne({ productId: ObjectId.createFromHexString(productId) })
+    if (result?.deleteCount > 0) {
+        const count = await collection.countDocuments({ uid })
+        result.count = count;
+    }
     return result;
 }
 
@@ -144,7 +154,7 @@ module.exports = {
     saveOrderDAO,
     cancelOrderDAO,
     getCartDAO,
-    deleteCartService,
+    deleteCartDAO,
     saveToCartDAO,
     getProductByIdDAO
 }
