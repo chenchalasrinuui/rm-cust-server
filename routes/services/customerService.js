@@ -60,7 +60,8 @@ async function saveToCartService(req) {
 
 async function deleteCartService(req) {
     const productId = req.query.productId;
-    const res = await deleteCartDAO(productId)
+    const uid = req?.query?.uid;
+    const res = await deleteCartDAO(productId, uid)
     return res;
 }
 

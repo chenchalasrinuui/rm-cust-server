@@ -90,7 +90,7 @@ async function getCartDAO(id) {
 async function saveToCartDAO(data) {
     const db = await getDB()
     const collection = db.collection("cart")
-    const cartItems = await collection.find({ productId: ObjectId.createFromHexString(data?.productId) }).toArray();
+    const cartItems = await collection.find({ productId: ObjectId.createFromHexString(data?.productId), uid: data?.uid }).toArray();
     if (cartItems?.length == 0) {
         const result = await collection.insertOne({ ...data, productId: ObjectId.createFromHexString(data.productId) })
         const count = await collection.countDocuments({ uid: data?.uid })
@@ -105,8 +105,8 @@ async function saveToCartDAO(data) {
 async function deleteCartDAO(productId, uid) {
     const db = await getDB()
     const collection = db.collection("cart")
-    const result = await collection.deleteOne({ productId: ObjectId.createFromHexString(productId) })
-    if (result?.deleteCount > 0) {
+    const result = await collection.deleteOne({ productId: ObjectId.createFromHexString(productId), uid })
+    if (result?.deletedCount > 0) {
         const count = await collection.countDocuments({ uid })
         result.count = count;
     }
