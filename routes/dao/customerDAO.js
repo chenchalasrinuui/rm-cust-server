@@ -143,6 +143,21 @@ async function saveAddressDAO(data) {
     return result;
 }
 
+async function getCustomerByIdDAO(id) {
+    const db = await getDB()
+    const collection = db.collection("customers")
+    const result = await collection.find({ _id: ObjectId.createFromHexString(id) }).toArray()
+    return result;
+}
+
+async function updateProfileDAO(id, data) {
+    const db = await getDB()
+    const collection = db.collection("customers")
+    const result = await collection.updateOne({ _id: ObjectId.createFromHexString(id) }, { $set: data });
+    return result;
+}
+
+
 
 module.exports = {
     saveAddressDAO,
@@ -156,5 +171,7 @@ module.exports = {
     getCartDAO,
     deleteCartDAO,
     saveToCartDAO,
-    getProductByIdDAO
+    getProductByIdDAO,
+    getCustomerByIdDAO,
+    updateProfileDAO
 }

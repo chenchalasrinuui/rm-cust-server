@@ -1,7 +1,7 @@
 var express = require('express')
 var router = express.Router()
 var validateToken = require('../../utils/validateToken')
-const { saveAddressService, addressListService, regService, loginService, getOrdersService, getProductByIdService, getProductsService, saveOrderService, saveToCartService, deleteCartService, getCartService } = require('../services/customerService')
+const { saveAddressService, updateProfileService, getCustomerByIdService, addressListService, regService, loginService, getOrdersService, getProductByIdService, getProductsService, saveOrderService, saveToCartService, deleteCartService, getCartService } = require('../services/customerService')
 
 router.post("/login", async function (req, res, next) {
     try {
@@ -162,4 +162,30 @@ router.get(
         }
     })
 
+router.get("/getCustomerById", validateToken, function (req, res, next) {
+    try {
+        (async () => {
+            const result = await getCustomerByIdService(req);
+            res.send(result)
+        })()
+
+    } catch (ex) {
+        console.error(ex);
+        res.send(ex.message)
+    }
+
+})
+
+router.put("/updateProfile", validateToken, function (req, res, next) {
+    try {
+        (async () => {
+            const result = await updateProfileService(req);
+            res.send(result)
+        })()
+
+    } catch (ex) {
+        console.error(ex);
+        res.send(ex.message)
+    }
+})
 module.exports = router;
