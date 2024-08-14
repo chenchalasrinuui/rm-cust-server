@@ -103,11 +103,9 @@ async function getCustomerByIdService(req) {
     return res[0];
 }
 
-async function updateProfileService(req) {
-    const data = req.body.data;
-    const id = req.query.id;
-    const res = await updateProfileDAO(id, data);
-    return res;
+async function updateProfileService(req, res, upload) {
+    const result = await updateProfileDAO(req, res, upload);
+    return result;
 }
 module.exports = {
     addressListService,

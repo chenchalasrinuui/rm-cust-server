@@ -2,6 +2,41 @@ var express = require('express')
 var router = express.Router()
 var validateToken = require('../../utils/validateToken')
 const { saveAddressService, updateProfileService, getCustomerByIdService, addressListService, regService, loginService, getOrdersService, getProductByIdService, getProductsService, saveOrderService, saveToCartService, deleteCartService, getCartService } = require('../services/customerService')
+var multer = require('multer');
+var path = require('path')
+
+// Set storage engine for Multer
+const storage = multer.diskStorage({
+    destination: './profilepics/',
+    filename: (req, file, cb) => {
+        console.log(req?.query)
+        cb(null, req.body.id + path.extname(file.originalname));
+    }
+});
+
+// Initialize upload variable
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 1000000 }, // limit file size to 1MB
+    fileFilter: (req, file, cb) => {
+        checkFileType(file, cb);
+    }
+}).single('image');
+
+
+// Check file type
+function checkFileType(file, cb) {
+    const filetypes = /jpeg|jpg|png|gif/;
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = filetypes.test(file.mimetype);
+
+    if (mimetype && extname) {
+        return cb(null, true);
+    } else {
+        cb('Error: Images Only!');
+    }
+}
+
 
 router.post("/login", async function (req, res, next) {
     try {
@@ -179,7 +214,7 @@ router.get("/getCustomerById", validateToken, function (req, res, next) {
 router.put("/updateProfile", validateToken, function (req, res, next) {
     try {
         (async () => {
-            const result = await updateProfileService(req);
+            const result = await updateProfileService(req, res, upload);
             res.send(result)
         })()
 
@@ -188,4 +223,6 @@ router.put("/updateProfile", validateToken, function (req, res, next) {
         res.send(ex.message)
     }
 })
+
+
 module.exports = router;

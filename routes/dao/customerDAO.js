@@ -9,7 +9,6 @@ async function loginDAO(data) {
         const count = await cart.countDocuments({ uid: result?._id?.toString() })
         result.count = count;
     }
-    console.log(1111, result)
     return result;
 }
 
@@ -150,11 +149,19 @@ async function getCustomerByIdDAO(id) {
     return result;
 }
 
-async function updateProfileDAO(id, data) {
-    const db = await getDB()
-    const collection = db.collection("customers")
-    const result = await collection.updateOne({ _id: ObjectId.createFromHexString(id) }, { $set: data });
-    return result;
+async function updateProfileDAO(req, res, upload) {
+    upload(req, res, async (err) => {
+
+        if (err) {
+            res.send("issue with profile pic upload")
+        }
+        const { id, uid, password, phone, extension } = req.body;
+        const db = await getDB()
+        const collection = db.collection("customers")
+        const result = await collection.updateOne({ _id: ObjectId.createFromHexString(id) }, { $set: { uid, password, phone, profile: `${id}.${extension}` } });
+        return result;
+    })
+
 }
 
 
