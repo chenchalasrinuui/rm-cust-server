@@ -21,7 +21,7 @@ const upload = multer({
     fileFilter: (req, file, cb) => {
         checkFileType(file, cb);
     }
-}).single('image');
+})
 
 
 // Check file type
@@ -211,10 +211,13 @@ router.get("/getCustomerById", validateToken, function (req, res, next) {
 
 })
 
-router.put("/updateProfile", validateToken, function (req, res, next) {
+router.put("/updateProfile", validateToken, upload.single('image'), function (req, res, next) {
+
     try {
         (async () => {
+            console.log(1)
             const result = await updateProfileService(req, res, upload);
+            console.log(8);
             res.send(result)
         })()
 

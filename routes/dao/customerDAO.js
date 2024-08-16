@@ -150,17 +150,12 @@ async function getCustomerByIdDAO(id) {
 }
 
 async function updateProfileDAO(req, res, upload) {
-    upload(req, res, async (err) => {
 
-        if (err) {
-            res.send("issue with profile pic upload")
-        }
-        const { id, uid, password, phone, extension } = req.body;
-        const db = await getDB()
-        const collection = db.collection("customers")
-        const result = await collection.updateOne({ _id: ObjectId.createFromHexString(id) }, { $set: { uid, password, phone, profile: `${id}.${extension}` } });
-        return result;
-    })
+    const { id, uid, password, phone, extension } = req.body;
+    const db = await getDB()
+    const collection = db.collection("customers")
+    const result = await collection.updateOne({ _id: ObjectId.createFromHexString(id) }, { $set: { uid, password, phone, profile: `${id}.${extension}` } });
+    return result;
 
 }
 

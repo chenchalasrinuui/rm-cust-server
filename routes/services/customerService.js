@@ -104,7 +104,9 @@ async function getCustomerByIdService(req) {
 }
 
 async function updateProfileService(req, res, upload) {
+    console.log(2);
     const result = await updateProfileDAO(req, res, upload);
+    console.log(7);
     return result;
 }
 module.exports = {
